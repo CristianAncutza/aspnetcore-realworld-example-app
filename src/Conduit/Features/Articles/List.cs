@@ -33,7 +33,9 @@ public class List
             if (message.IsFeed && currentUserAccessor.GetCurrentUsername() != null)
             {
                 var currentUser = await context
-                    .Persons.Include(x => x.Following)
+                    .Persons
+                    .AsNoTracking()
+                    .Include(x => x.Following)
                     .FirstOrDefaultAsync(
                         x => x.Username == currentUserAccessor.GetCurrentUsername(),
                         cancellationToken
@@ -53,7 +55,9 @@ public class List
 
             if (!string.IsNullOrWhiteSpace(message.Tag))
             {
-                var tag = await context.ArticleTags.FirstOrDefaultAsync(
+                var tag = await context.ArticleTags
+                .AsNoTracking()
+                .FirstOrDefaultAsync(
                     x => x.TagId == message.Tag,
                     cancellationToken
                 );
