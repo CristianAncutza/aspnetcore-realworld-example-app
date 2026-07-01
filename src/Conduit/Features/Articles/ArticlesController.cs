@@ -12,13 +12,14 @@ public class ArticlesController(IMediator mediator) : Controller
 {
     [HttpGet]
     public Task<ArticlesEnvelope> Get(
-        [FromQuery] string tag,
-        [FromQuery] string author,
-        [FromQuery] string favorited,
+        [FromQuery] string? tag,
+        [FromQuery] string? author,
+        [FromQuery] string? favorited,
         [FromQuery] int? limit,
         [FromQuery] int? offset,
+        [FromQuery] string search,
         CancellationToken cancellationToken
-    ) => mediator.Send(new List.Query(tag, author, favorited, limit, offset), cancellationToken);
+    ) => mediator.Send(new List.Query(tag, author, favorited, limit, offset, search), cancellationToken);
 
     [HttpGet("feed")]
     public Task<ArticlesEnvelope> GetFeed(
@@ -27,10 +28,11 @@ public class ArticlesController(IMediator mediator) : Controller
         [FromQuery] string favorited,
         [FromQuery] int? limit,
         [FromQuery] int? offset,
+        [FromQuery] string search,
         CancellationToken cancellationToken
     ) =>
         mediator.Send(
-            new List.Query(tag, author, favorited, limit, offset) { IsFeed = true },
+            new List.Query(tag, author, favorited, limit, offset, search) { IsFeed = true },
             cancellationToken
         );
 

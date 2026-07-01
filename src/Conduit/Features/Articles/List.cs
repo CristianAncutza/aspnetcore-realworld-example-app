@@ -12,11 +12,12 @@ namespace Conduit.Features.Articles;
 public class List
 {
     public record Query(
-        string Tag,
-        string Author,
-        string FavoritedUsername,
+        string? Tag,
+        string? Author,
+        string? FavoritedUsername,
         int? Limit,
         int? Offset,
+        string Search,
         bool IsFeed = false
     ) : IRequest<ArticlesEnvelope>;
 
@@ -105,6 +106,13 @@ public class List
                 {
                     return new ArticlesEnvelope();
                 }
+            }
+
+            if(!string.IsNullOrWhiteSpace(message.Search))
+            {
+                queryable = queryable.Where(x =>
+                    x.Title!.Contains(message.Search) || x.Description!.Contains(message.Search)
+                );
             }
 
             var articles = await queryable
